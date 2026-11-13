@@ -1,0 +1,93 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#173b68"><title>英文逐句默寫練習</title><style>
+:root{font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif;color:#182a40;background:#f4f7fb}*{box-sizing:border-box}body{margin:0}.wrap{max-width:960px;margin:auto;padding:18px}header{background:#173b68;color:white;padding:24px 0}header h1{margin:0;font-size:26px}header p{margin:8px 0 0;color:#d5e3f6}.panel,.sentence{background:white;border:1px solid #dae2ec;border-radius:14px;padding:20px;margin:18px 0;box-shadow:0 2px 9px #142f4c0a}h2{font-size:19px;margin:0 0 14px}textarea,input{width:100%;font:inherit;border:1px solid #bac9d9;border-radius:9px;padding:12px;line-height:1.7;background:white;color:#182a40}textarea:focus,input:focus{outline:2px solid #82b5ee;border-color:#367bc5}.article{min-height:140px}.answer{min-height:155px;resize:vertical}.translation{min-height:62px;resize:vertical;background:#fafcff}.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}button,.filebtn{background:#205c9c;color:white;border:0;border-radius:9px;padding:11px 16px;font:inherit;font-weight:600;cursor:pointer;display:inline-block}button.secondary,.filebtn{background:#e8eff8;color:#214b7c}button.danger{background:#fff0ee;color:#a13226}button:hover,.filebtn:hover{filter:brightness(.96)}.hint,.muted{color:#61738b;font-size:13px}.number{font-size:13px;color:#587393;font-weight:700}.english{font-size:18px;line-height:1.7;font-weight:650;margin:8px 0}.cnlabel{font-size:12px;color:#52677f;margin:12px 0 5px}.status{font-size:14px;font-weight:700;margin-top:9px}.ok{color:#157348}.bad{color:#a73d2b}.diff{background:#fff8f6;border:1px solid #f0c9c1;border-radius:9px;padding:12px;margin-top:10px;font-size:14px;line-height:2}.wrong{display:inline-block;background:#ffe1da;color:#9c271d;padding:0 5px;border-radius:4px;margin:2px}.right{display:inline-block;background:#e0f5e8;color:#11643b;padding:0 5px;border-radius:4px;margin:2px}.progress{height:10px;border-radius:8px;background:#e4ebf3;overflow:hidden}.progress div{height:100%;background:#27946c;transition:width .2s}.topline{display:flex;justify-content:space-between;gap:12px;align-items:center}.empty{padding:25px;text-align:center;color:#64758b}.historyItem{border-top:1px solid #e5eaf0;padding:12px 0;display:flex;gap:12px;justify-content:space-between;align-items:center}.historyItem strong{display:block}.historyItem small{color:#63748a}.historyItem button{padding:8px 10px;font-size:13px}.switch{display:flex;align-items:center;gap:8px}.switch input{width:auto}.filebtn input{display:none}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar button{padding:8px 12px;font-size:13px}@media(max-width:600px){.wrap{padding:12px}.panel,.sentence{padding:15px;margin:12px 0}header h1{font-size:22px}.english{font-size:17px}.controls button,.controls .filebtn{flex:1;text-align:center}.historyItem{align-items:flex-start;flex-direction:column}}
+</style></head><body><header><div class="wrap"><h1>📖 英文逐句默寫練習 · V4</h1><p>英文原句 × 中文翻譯 × 大型輸入框 × 自動批改</p></div></header><main class="wrap"><section class="panel"><h2>① 建立練習文章</h2><label for="title">文章名稱</label><input id="title" value="找回內心的平靜"><p class="cnlabel">貼上英文文章（原文換行會自動合併，按「產生逐句練習」即自動翻譯）</p><textarea class="article" id="article" placeholder="請貼上英文文章"></textarea><div class="controls"><button id="generate">產生逐句練習</button><button class="secondary" id="sample">重新載入範例（選用）</button><button class="secondary" id="retryTranslate">重新翻譯未完成句子</button><button class="secondary" id="new">新增空白文章</button></div><p class="hint" id="translateStatus" aria-live="polite">準備就緒</p><p class="hint">新文章將嘗試使用免費線上翻譯服務翻譯成繁體中文（需要網路）；翻譯可能有誤，可自行修改。英文會傳送至第三方翻譯服務。</p></section><section class="panel"><div class="topline"><h2>② 練習進度</h2><strong id="counter">0 / 0</strong></div><div class="progress"><div id="bar" style="width:0%"></div></div><div class="controls"><button id="checkAll">全部批改</button><button class="secondary" id="save">儲存練習</button><button class="danger" id="clearAnswers">清空所有答案</button></div><p class="hint" id="saveNote">輸入內容會自動儲存在這台裝置的瀏覽器。</p></section><div id="practice"></div><section class="panel"><h2>③ 我的練習紀錄</h2><div id="history"></div><div class="controls"><button class="secondary" id="export">匯出備份（JSON）</button><label class="filebtn">匯入備份<input type="file" id="import" accept=".json,application/json"></label></div><p class="hint">不同手機、電腦或瀏覽器不會自動同步。可用「匯出備份／匯入備份」轉移紀錄。請勿在無痕模式練習。</p></section></main><script>
+'use strict';
+const SAMPLE=`Have you ever noticed that even when\neverything seems fine, your mind still\nrefuses to be quiet?\nYou wake up thinking about yesterday's\nmistakes.\nYou spend the whole day worrying about\ntomorrow. You compare yourself with\npeople who seem happier than you.\nYou keep searching for peace, but the\nmore you chase it, the farther it feels.\nSome people believe that money will\nbring peace.\nOthers think success, relationships, or\na better house will finally make them\ncalm.`;
+const TRANSLATIONS=['你是否曾注意到，即使一切看起來都很好，你的思緒仍然無法平靜下來？','你醒來時，腦中想著昨天犯下的錯誤。','你花了一整天擔心明天的事。','你拿自己和那些看起來比你快樂的人比較。','你不斷尋找內心的平靜，但越是追求，卻感覺它離你越遠。','有些人相信金錢會帶來內心的平靜。','另一些人認為，成功、人際關係或更好的房子，最終能讓他們平靜下來。'];
+const $=id=>document.getElementById(id);const KEY='english-writing-practice-v1';
+let store={docs:[],current:null};try{let data=JSON.parse(localStorage.getItem(KEY));if(data&&Array.isArray(data.docs))store=data}catch(e){}
+const uid=()=>String(Date.now())+'-'+Math.random().toString(36).slice(2,8);
+function splitSentences(s){let cleaned=s.replace(/\s+/g,' ').trim();return (cleaned.match(/[^.!?。！？]+(?:[.!?。！？]+|$)/g)||[]).map(x=>x.trim()).filter(Boolean)}
+function normalize(s){return (s||'').toLowerCase().replace(/[‘’]/g,"'").replace(/[^a-z0-9'\s]/g,'').replace(/\s+/g,' ').trim()}
+function tokens(s){return normalize(s).split(' ').filter(Boolean)}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function compare(expected,actual){let a=tokens(expected),b=tokens(actual),n=a.length,m=b.length;let dp=Array.from({length:n+1},()=>Array(m+1).fill(0));for(let i=0;i<=n;i++)dp[i][0]=i;for(let j=0;j<=m;j++)dp[0][j]=j;for(let i=1;i<=n;i++)for(let j=1;j<=m;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(a[i-1]===b[j-1]?0:1));let i=n,j=m,out=[];while(i||j){if(i&&j&&dp[i][j]===dp[i-1][j-1]+(a[i-1]===b[j-1]?0:1)){if(a[i-1]!==b[j-1])out.push({from:b[j-1],to:a[i-1]});i--;j--}else if(i&&dp[i][j]===dp[i-1][j]+1){out.push({from:'（漏字）',to:a[i-1]});i--}else{out.push({from:b[j-1],to:'（多餘）'});j--}}return out.reverse()}
+function current(){return store.docs.find(x=>x.id===store.current)}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(store));$('saveNote').textContent='已自動儲存於此瀏覽器 · '+new Date().toLocaleTimeString('zh-TW')}catch(e){$('saveNote').textContent='無法儲存：瀏覽器儲存空間不可用，請匯出備份。'}}
+function makeDoc(title,raw,isSample=false){let sentences=splitSentences(raw);return {id:uid(),title:title||'未命名文章',raw,updated:new Date().toISOString(),items:sentences.map((en,i)=>({en,zh:(isSample||raw.replace(/\s+/g,' ').trim()===SAMPLE.replace(/\s+/g,' ').trim())?TRANSLATIONS[i]||'':'',answer:'',checked:false}))}}
+function generate(isSample=false){let raw=isSample?SAMPLE:$('article').value;let parts=splitSentences(raw);if(!parts.length){alert('請先貼上英文文章');return}let doc=makeDoc(isSample?'找回內心的平靜':$('title').value,raw,isSample);store.docs.unshift(doc);store.current=doc.id;persist();render();if(!isSample)translateDoc(doc);$('practice').scrollIntoView({behavior:'smooth',block:'start'})}
+async function translateSentence(sentence){
+ const problems=[];
+ // Try a public Google Translate endpoint first; some browsers block it for local file URLs.
+ try{
+  const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=zh-TW&dt=t&q='+encodeURIComponent(sentence);
+  const response=await fetch(url,{signal:AbortSignal.timeout(12000)});
+  if(!response.ok)throw Error('HTTP '+response.status);
+  const data=await response.json();
+  const translated=(data?.[0]||[]).map(part=>part?.[0]||'').join('').trim();
+  if(translated)return translated;
+  throw Error('沒有回傳翻譯');
+ }catch(e){problems.push('Google：'+e.message)}
+ // Backup: MyMemory. It may reject zh-TW, so try zh-CN only as a last resort.
+ for(const lang of ['zh-TW','zh-CN']){
+  try{
+   if(new TextEncoder().encode(sentence).length>500)throw Error('句子超過 500 bytes');
+   const params=new URLSearchParams({q:sentence,langpair:'en|'+lang});
+   const response=await fetch('https://api.mymemory.translated.net/get?'+params,{signal:AbortSignal.timeout(12000)});
+   if(!response.ok)throw Error('HTTP '+response.status);
+   const data=await response.json();
+   const result=data?.responseData?.translatedText;
+   if(data.responseStatus!==200||!result||data.quotaFinished)throw Error(data.responseDetails||'無可用翻譯');
+   return result;
+  }catch(e){problems.push('MyMemory '+lang+'：'+e.message)}
+ }
+ throw Error(problems.join('；'));
+}
+async function translateDoc(doc){
+ const pending=doc.items.filter(x=>!x.zh.trim());
+ if(!pending.length){$('translateStatus').textContent='所有句子已有中文翻譯。';return}
+ $('translateStatus').textContent=`正在翻譯 0 / ${pending.length} 句…`;
+ let done=0,failed=0,lastError='';
+ for(const item of pending){
+  if(!store.docs.some(d=>d.id===doc.id))break;
+  try{
+   const result=await translateSentence(item.en);
+   if(!item.zh.trim())item.zh=result;
+   doc.updated=new Date().toISOString();persist();
+   if(current()?.id===doc.id){const index=doc.items.indexOf(item);const el=document.querySelectorAll('#practice .translation')[index];if(el&&document.activeElement!==el){el.value=item.zh;resize(el)}}
+  }catch(e){failed++;lastError=e.message;console.warn('翻譯失敗',e)}
+  done++;if(current()?.id===doc.id)$('translateStatus').textContent=`翻譯進度 ${done} / ${pending.length} 句${failed?'，失敗 '+failed+' 句':''}`;
+ }
+ if(current()?.id===doc.id)$('translateStatus').textContent=failed?`已完成 ${done-failed} 句；${failed} 句翻譯失敗。可能是瀏覽器阻擋本機檔案連線或免費服務限制。請改用 https 網站開啟，或手動填寫中文。錯誤：${lastError}`:'中文翻譯完成！可直接開始默寫。';
+}
+
+function resize(el){el.style.height='auto';el.style.height=Math.max(el.classList.contains('answer')?155:62,el.scrollHeight+4)+'px'}
+function render(){let d=current();if(d){$('title').value=d.title;$('article').value=d.raw}else{$('title').value='';$('article').value=''}let root=$('practice');root.replaceChildren();if(!d){root.innerHTML='<div class="panel empty">貼上文章後按「產生逐句練習」開始。</div>'}else d.items.forEach((item,i)=>{let section=document.createElement('section');section.className='sentence';section.innerHTML=`<div class="topline"><span class="number">第 ${i+1} 句</span><span class="status" id="status-${i}"></span></div><div class="english">${escapeHTML(item.en)}</div><div class="cnlabel">中文翻譯（可編輯）</div><textarea class="translation" aria-label="第${i+1}句中文翻譯" placeholder="在此輸入或貼上中文翻譯…">${escapeHTML(item.zh)}</textarea><div class="cnlabel">英文默寫練習</div><textarea class="answer" aria-label="第${i+1}句英文默寫" placeholder="在這裡輸入英文，輸入框會隨文字自動增高…">${escapeHTML(item.answer)}</textarea><div class="controls toolbar"><button class="secondary check">檢查這一句</button><button class="secondary reset">清空這一句</button></div><div class="feedback" aria-live="polite"></div>`;root.appendChild(section);let zh=section.querySelector('.translation'),ans=section.querySelector('.answer');[zh,ans].forEach(resize);zh.addEventListener('input',()=>{item.zh=zh.value;d.updated=new Date().toISOString();resize(zh);persist()});ans.addEventListener('input',()=>{item.answer=ans.value;item.checked=false;d.updated=new Date().toISOString();resize(ans);persist();showResult(section,item,i);progress()});section.querySelector('.check').onclick=()=>{item.checked=true;persist();showResult(section,item,i);progress()};section.querySelector('.reset').onclick=()=>{item.answer='';item.checked=false;ans.value='';resize(ans);persist();showResult(section,item,i);progress()};showResult(section,item,i)});progress();renderHistory()}
+function showResult(section,item,i){let status=section.querySelector('.status'),feedback=section.querySelector('.feedback');status.textContent='';feedback.replaceChildren();if(!item.checked)return;if(!item.answer.trim()){status.textContent='尚未輸入';status.className='status muted';return}if(normalize(item.en)===normalize(item.answer)){status.textContent='✓ 完全正確';status.className='status ok';return}status.textContent='需要修正';status.className='status bad';let differences=compare(item.en,item.answer);let box=document.createElement('div');box.className='diff';box.innerHTML='<strong>錯誤比對：</strong><div>'+differences.map(x=>`<span class="wrong">${escapeHTML(x.from)}</span> → <span class="right">${escapeHTML(x.to)}</span>`).join('　')+'</div><p class="hint">紅色是你的輸入；綠色是原句應有的文字。大小寫及標點符號不列入檢查。</p>';feedback.appendChild(box)}
+function progress(){let d=current(),total=d?.items.length||0,correct=d?d.items.filter(x=>x.checked&&normalize(x.en)===normalize(x.answer)).length:0;$('counter').textContent=`${correct} / ${total}`;$('bar').style.width=(total?100*correct/total:0)+'%'}
+function renderHistory(){let h=$('history');h.replaceChildren();if(!store.docs.length){h.innerHTML='<p class="muted">目前還沒有練習紀錄。</p>';return}store.docs.forEach(d=>{let item=document.createElement('div');item.className='historyItem';let count=d.items.filter(x=>x.checked&&normalize(x.en)===normalize(x.answer)).length;item.innerHTML=`<div><strong>${escapeHTML(d.title)}</strong><small>${d.items.length} 句 · 已答對 ${count} 句 · ${new Date(d.updated).toLocaleString('zh-TW')}</small></div><div class="toolbar"><button class="secondary open">開啟</button><button class="danger delete">刪除</button></div>`;item.querySelector('.open').onclick=()=>{store.current=d.id;persist();render();window.scrollTo({top:0,behavior:'smooth'})};item.querySelector('.delete').onclick=()=>{if(!confirm('確定刪除這篇文章與練習紀錄？'))return;store.docs=store.docs.filter(x=>x.id!==d.id);if(store.current===d.id)store.current=store.docs[0]?.id||null;persist();render()};h.appendChild(item)})}
+$('retryTranslate').onclick=()=>{const d=current();if(d)translateDoc(d)};$('generate').onclick=()=>generate(false);$('sample').onclick=()=>generate(true);$('new').onclick=()=>{store.current=null;persist();render();$('title').focus()};$('checkAll').onclick=()=>{let d=current();if(!d)return;d.items.forEach(x=>x.checked=true);persist();render()};$('clearAnswers').onclick=()=>{let d=current();if(!d||!confirm('確定清空目前文章的全部默寫答案？'))return;d.items.forEach(x=>{x.answer='';x.checked=false});persist();render()};$('save').onclick=()=>{persist();renderHistory();alert('已儲存到這台裝置的瀏覽器。建議定期匯出備份。')};$('export').onclick=()=>{let blob=new Blob([JSON.stringify({version:1,docs:store.docs,current:store.current},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='英文默寫練習備份-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};$('import').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let data=JSON.parse(await f.text());if(!Array.isArray(data.docs)||!data.docs.every(d=>d&&typeof d.id==='string'&&Array.isArray(d.items)&&d.items.every(x=>typeof x.en==='string')))throw Error('備份格式不正確');if(!confirm('匯入將取代目前瀏覽器中的所有練習紀錄，確定繼續？'))return;store={docs:data.docs,current:data.docs.some(d=>d.id===data.current)?data.current:data.docs[0]?.id||null};persist();render();alert('匯入成功')}catch(err){alert('匯入失敗：'+err.message)}finally{e.target.value=''}};
+// Upgrade old records: fill missing Chinese for known sample sentences, without touching answers.
+const sampleEnglish=splitSentences(SAMPLE);
+let repaired=0;
+for(const doc of store.docs){
+ for(const item of doc.items){
+  if(!item.zh || !item.zh.trim()){
+   const index=sampleEnglish.findIndex(en=>normalize(en)===normalize(item.en));
+   if(index>=0 && TRANSLATIONS[index]){item.zh=TRANSLATIONS[index];repaired++}
+  }
+ }
+}
+if(!store.docs.length){let d=makeDoc('找回內心的平靜',SAMPLE,true);store.docs=[d];store.current=d.id;repaired++}
+if(!current() && store.docs.length)store.current=store.docs[0].id;
+if(repaired)persist();
+render();
+// Restore the last opened article automatically; retry missing translations online.
+const initialDoc=current();
+if(initialDoc){
+ $('article').value=initialDoc.raw;
+ if(initialDoc.items.some(x=>!x.zh || !x.zh.trim()))translateDoc(initialDoc);
+ else $('translateStatus').textContent='已自動恢復上次文章及中文翻譯，可以直接練習。';
+}
+
+</script></body></html>
