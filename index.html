@@ -1,8 +1,17 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#173b68"><title>英文逐句默寫練習</title><style>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="referrer" content="no-referrer"><script>
+let oauthReturn=null;
+if(location.hash){
+ const p=new URLSearchParams(location.hash.slice(1));
+ if(p.has('access_token')||p.has('error')){
+  oauthReturn=p;
+  history.replaceState(null,'',location.pathname+location.search);
+ }
+}
+</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#173b68"><title>英文逐句默寫練習</title><style>
 :root{font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif;color:#182a40;background:#f4f7fb}*{box-sizing:border-box}body{margin:0}.wrap{max-width:960px;margin:auto;padding:18px}header{background:#173b68;color:white;padding:24px 0}header h1{margin:0;font-size:26px}header p{margin:8px 0 0;color:#d5e3f6}.panel,.sentence{background:white;border:1px solid #dae2ec;border-radius:14px;padding:20px;margin:18px 0;box-shadow:0 2px 9px #142f4c0a}h2{font-size:19px;margin:0 0 14px}textarea,input{width:100%;font:inherit;border:1px solid #bac9d9;border-radius:9px;padding:12px;line-height:1.7;background:white;color:#182a40}textarea:focus,input:focus{outline:2px solid #82b5ee;border-color:#367bc5}.article{min-height:140px}.answer{min-height:80px;resize:vertical}.translation{min-height:62px;resize:vertical;background:#fafcff}.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}button,.filebtn{background:#205c9c;color:white;border:0;border-radius:9px;padding:11px 16px;font:inherit;font-weight:600;cursor:pointer;display:inline-block}button.secondary,.filebtn{background:#e8eff8;color:#214b7c}button.danger{background:#fff0ee;color:#a13226}button:hover,.filebtn:hover{filter:brightness(.96)}.hint,.muted{color:#61738b;font-size:13px}.number{font-size:13px;color:#587393;font-weight:700}.english{font-size:18px;line-height:1.7;font-weight:650;margin:8px 0}.english[hidden]{display:none}.englishLine{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;min-height:48px}.englishLine .english{flex:1;min-width:0}.englishLine .toggleEnglish{margin-left:auto;flex:none;padding:8px 12px;font-size:13px;white-space:nowrap}.cnlabel{font-size:12px;color:#52677f;margin:12px 0 5px}.status{font-size:14px;font-weight:700;margin-top:9px}.ok{color:#157348}.bad{color:#a73d2b}.diff{background:#fff8f6;border:1px solid #f0c9c1;border-radius:9px;padding:12px;margin-top:10px;font-size:14px;line-height:2}.wrong{display:inline-block;background:#ffe1da;color:#9c271d;padding:0 5px;border-radius:4px;margin:2px}.right{display:inline-block;background:#e0f5e8;color:#11643b;padding:0 5px;border-radius:4px;margin:2px}.progress{height:10px;border-radius:8px;background:#e4ebf3;overflow:hidden}.progress div{height:100%;background:#27946c;transition:width .2s}.topline{display:flex;justify-content:space-between;gap:12px;align-items:center}.empty{padding:25px;text-align:center;color:#64758b}.historyItem{border-top:1px solid #e5eaf0;padding:12px 0;display:flex;gap:12px;justify-content:space-between;align-items:center}.historyItem strong{display:block}.historyItem small{color:#63748a}.historyItem button{padding:8px 10px;font-size:13px}.switch{display:flex;align-items:center;gap:8px}.switch input{width:auto}.filebtn input{display:none}a.filebtn{text-decoration:none}a.filebtn:focus-visible{outline:3px solid #82b5ee;outline-offset:2px}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar button{padding:8px 12px;font-size:13px}@media(max-width:600px){.wrap{padding:12px}.panel,.sentence{padding:15px;margin:12px 0}header h1{font-size:22px}.english{font-size:17px}.controls button,.controls .filebtn{flex:1;text-align:center}.historyItem{align-items:flex-start;flex-direction:column}}
-.cloud-panel{background:#f5f9ff;border:1px solid #c9d9f1;border-radius:12px;padding:16px}.cloud-panel details{margin-top:12px}.cloud-panel summary{font-weight:700;cursor:pointer}.cloud-panel input{margin:8px 0}.cloud-panel p{line-height:1.8}.cloudActions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.cloudActions button{flex:1}.cloudStatus{white-space:pre-wrap;overflow-wrap:anywhere}.cloud-panel a{color:#205c9c}.cloud-panel .secondary{background:#e8eff8}@media(max-width:600px){.cloudActions{flex-direction:column}.cloudActions button{width:100%}}</style></head><body><header><div class="wrap"><h1>📖 英文逐句默寫練習 · V5.1 診斷版</h1><p>英文原句 × 中文翻譯 × 大型輸入框 × 自動批改</p></div></header><main class="wrap"><section class="panel"><h2>① 建立練習文章</h2><label for="title">文章名稱</label><input id="title" value="找回內心的平靜"><p class="cnlabel">貼上英文文章（原文換行會自動合併，按「產生逐句練習」即自動翻譯）</p><textarea class="article" id="article" placeholder="請貼上英文文章"></textarea><div class="controls"><button id="generate">產生逐句練習</button><button class="secondary" id="sample">重新載入範例（選用）</button><button class="secondary" id="retryTranslate">重新翻譯未完成句子</button><button class="secondary" id="new">新增空白文章</button></div><p class="hint" id="translateStatus" aria-live="polite">準備就緒</p><p class="hint">新文章將嘗試使用免費線上翻譯服務翻譯成繁體中文（需要網路）；翻譯可能有誤，可自行修改。英文會傳送至第三方翻譯服務。</p></section><section class="panel"><div class="topline"><h2>② 練習進度</h2><strong id="counter">0 / 0</strong></div><div class="progress"><div id="bar" style="width:0%"></div></div><div class="controls"><button id="checkAll">全部批改</button><button class="secondary" id="save">儲存文章與練習</button><button class="danger" id="clearAnswers">清空所有答案</button></div><p class="hint" id="saveNote">輸入內容會自動儲存在這台裝置的瀏覽器。</p></section><div id="practice"></div><section class="panel"><h2>③ 我的練習紀錄</h2><div id="history"></div><div class="controls"><button class="secondary" id="export">① 下載練習存檔（JSON）</button><a class="filebtn" href="https://drive.google.com/drive/folders/1qFqHX-9V9YHHy067zoKAu6tVSI_ZQ7Wi" target="_blank" rel="noopener noreferrer" aria-label="在新分頁開啟我的 Google Drive 練習紀錄備份資料夾">② 開啟 Google Drive 備份資料夾 ↗</a><label class="filebtn">匯入備份<input type="file" id="import" accept=".json,application/json"></label></div><p class="hint">備份方式：先按①下載 JSON，再按②開啟 Google Drive，將下載的檔案上傳至「練習紀錄備份」資料夾。目前不會自動上傳。不同手機、電腦或瀏覽器不會自動同步；可用「匯入備份」恢復。請勿在無痕模式練習。</p></section><section class="panel" id="googleDrivePanel"><h2>④ 一鍵儲存 Google Drive</h2><p class="hint">完成一次 Google OAuth 設定後，按下方「直接存到 Google Drive」，就能上傳備份，不必先下載 JSON。這是手動雲端備份，不是即時跨裝置同步。</p>
+.cloud-panel{background:#f5f9ff;border:1px solid #c9d9f1;border-radius:12px;padding:16px}.cloud-panel details{margin-top:12px}.cloud-panel summary{font-weight:700;cursor:pointer}.cloud-panel input{margin:8px 0}.cloud-panel p{line-height:1.8}.cloudActions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.cloudActions button{flex:1}.cloudStatus{white-space:pre-wrap;overflow-wrap:anywhere}.cloud-panel a{color:#205c9c}.cloud-panel .secondary{background:#e8eff8}@media(max-width:600px){.cloudActions{flex-direction:column}.cloudActions button{width:100%}}</style></head><body><header><div class="wrap"><h1>📖 英文逐句默寫練習 · V5.2</h1><p>英文原句 × 中文翻譯 × 大型輸入框 × 自動批改</p></div></header><main class="wrap"><section class="panel"><h2>① 建立練習文章</h2><label for="title">文章名稱</label><input id="title" value="找回內心的平靜"><p class="cnlabel">貼上英文文章（原文換行會自動合併，按「產生逐句練習」即自動翻譯）</p><textarea class="article" id="article" placeholder="請貼上英文文章"></textarea><div class="controls"><button id="generate">產生逐句練習</button><button class="secondary" id="sample">重新載入範例（選用）</button><button class="secondary" id="retryTranslate">重新翻譯未完成句子</button><button class="secondary" id="new">新增空白文章</button></div><p class="hint" id="translateStatus" aria-live="polite">準備就緒</p><p class="hint">新文章將嘗試使用免費線上翻譯服務翻譯成繁體中文（需要網路）；翻譯可能有誤，可自行修改。英文會傳送至第三方翻譯服務。</p></section><section class="panel"><div class="topline"><h2>② 練習進度</h2><strong id="counter">0 / 0</strong></div><div class="progress"><div id="bar" style="width:0%"></div></div><div class="controls"><button id="checkAll">全部批改</button><button class="secondary" id="save">儲存文章與練習</button><button class="danger" id="clearAnswers">清空所有答案</button></div><p class="hint" id="saveNote">輸入內容會自動儲存在這台裝置的瀏覽器。</p></section><div id="practice"></div><section class="panel"><h2>③ 我的練習紀錄</h2><div id="history"></div><div class="controls"><button class="secondary" id="export">① 下載練習存檔（JSON）</button><a class="filebtn" href="https://drive.google.com/drive/folders/1qFqHX-9V9YHHy067zoKAu6tVSI_ZQ7Wi" target="_blank" rel="noopener noreferrer" aria-label="在新分頁開啟我的 Google Drive 練習紀錄備份資料夾">② 開啟 Google Drive 備份資料夾 ↗</a><label class="filebtn">匯入備份<input type="file" id="import" accept=".json,application/json"></label></div><p class="hint">備份方式：先按①下載 JSON，再按②開啟 Google Drive，將下載的檔案上傳至「練習紀錄備份」資料夾。目前不會自動上傳。不同手機、電腦或瀏覽器不會自動同步；可用「匯入備份」恢復。請勿在無痕模式練習。</p></section><section class="panel" id="googleDrivePanel"><h2>④ 一鍵儲存 Google Drive</h2><p class="hint">完成一次 Google OAuth 設定後，按下方「直接存到 Google Drive」，就能上傳備份，不必先下載 JSON。這是手動雲端備份，不是即時跨裝置同步。</p>
 <div class="cloud-panel"><div class="cloudActions"><button id="cloudSave" type="button">☁ 直接存到 Google Drive</button><button id="cloudRestore" class="secondary" type="button">從 Google Drive 還原最新備份</button></div>
-<p class="hint cloudStatus" id="cloudStatus" role="status" aria-live="polite">尚未連線。第一次使用，請展開下方設定。</p><p id="activeCloudFolder" hidden><a id="activeCloudFolderLink" href="#" target="_blank" rel="noopener noreferrer">查看雲端備份資料夾 ↗</a></p>
+<div class="cloudActions"><button id="pageLoginSave" type="button">同頁登入並備份（彈出視窗失敗時使用）</button><button id="pageLoginRestore" class="secondary" type="button">同頁登入並還原</button></div><p class="hint">同頁登入會暫時前往 Google，返回後接續備份。練習內容會先保存在此瀏覽器。</p><p class="hint cloudStatus" id="cloudStatus" role="status" aria-live="polite">尚未連線。第一次使用，請展開下方設定。</p><p id="activeCloudFolder" hidden><a id="activeCloudFolderLink" href="#" target="_blank" rel="noopener noreferrer">查看雲端備份資料夾 ↗</a></p>
 <details><summary>備份診斷紀錄</summary><p class="hint">僅記錄處理階段與錯誤代碼，不包含權杖或練習內容。</p><pre id="cloudDiagnostics" style="white-space:pre-wrap"></pre></details><details id="cloudSetup"><summary>第一次使用：Google 雲端授權設定</summary><p class="hint">先在 Google Cloud 建立專案、啟用 Google Drive API、設定 Google Auth Platform（外部測試使用者加入你的 Google 帳號），再建立「Web application」OAuth Client ID。「Authorized JavaScript origins」請填 <strong>https://stacy0908.github.io</strong>，不要加 /english-practice/。</p>
 <p class="hint"><a target="_blank" rel="noopener noreferrer" href="https://console.cloud.google.com/apis/library/drive.googleapis.com">① 啟用 Drive API ↗</a>　<a target="_blank" rel="noopener noreferrer" href="https://console.cloud.google.com/auth/overview">② 設定 OAuth ↗</a>　<a target="_blank" rel="noopener noreferrer" href="https://console.cloud.google.com/auth/clients">③ 建立 Client ID ↗</a></p>
 <label for="googleClientId">OAuth Client ID（不是密碼或 Client Secret）</label><input id="googleClientId" autocomplete="off" spellcheck="false" placeholder="1234567890-xxxxx.apps.googleusercontent.com"><button class="secondary" type="button" id="cloudConfigSave">儲存授權設定</button>
@@ -208,13 +217,15 @@ function cloudSetBusy(value){
  $('cloudSave').disabled=value;
  $('cloudRestore').disabled=value;
  $('cloudConfigSave').disabled=value;
+ $('pageLoginSave').disabled=value;
+ $('pageLoginRestore').disabled=value;
 }
 function runWithGoogle(action){
  if(cloudBusy)return;
  if(!/^\d+-[\w-]+\.apps\.googleusercontent\.com$/.test(getClientId())){
   setCloudStatus('請先填入 OAuth Client ID。');$('cloudSetup').open=true;return;
  }
- if(!window.google||!google.accounts||!google.accounts.oauth2){
+ if(!(googleToken&&Date.now()<tokenExpires)&&(!window.google||!google.accounts||!google.accounts.oauth2)){
   setCloudStatus('Google 登入元件尚未載入，請確認網路連線後重新整理。');return;
  }
  cloudSetBusy(true);
@@ -266,5 +277,53 @@ $('cloudConfigSave').onclick=saveClientId;
 $('cloudSave').onclick=()=>runWithGoogle(cloudSave);
 $('cloudRestore').onclick=()=>runWithGoogle(cloudRestore);
 if($('googleClientId').value)setCloudStatus('Google 設定已載入；按「直接存到 Google Drive」即可登入並備份。');
+
+
+const REDIRECT_URI='https://stacy0908.github.io/english-practice/';
+const REDIRECT_KEY=KEY+'-oauth-pending';
+const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
+function startPageLogin(action){
+ if(cloudBusy)return;
+ if(!saveClientId())return;
+ if(location.origin+location.pathname!==REDIRECT_URI){
+  setCloudStatus('請從 https://stacy0908.github.io/english-practice/ 開啟此 App。');return;
+ }
+ saveCurrentTitle();
+ try{
+  // Preserve current practice before leaving this page; abort if storage fails.
+  localStorage.setItem(KEY,JSON.stringify(store));
+  const state=Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');
+  sessionStorage.setItem(REDIRECT_KEY,JSON.stringify({state,created:Date.now(),action,clientId:getClientId()}));
+  const params=new URLSearchParams({client_id:getClientId(),redirect_uri:REDIRECT_URI,response_type:'token',
+   scope:DRIVE_SCOPE,state,include_granted_scopes:'true',prompt:'select_account'});
+  cloudTrace('轉往 Google 同頁登入');
+  cloudSetBusy(true);
+  location.assign('https://accounts.google.com/o/oauth2/v2/auth?'+params);
+ }catch(e){cloudSetBusy(false);setCloudStatus('無法保存登入前資料，尚未離開此頁。請確認瀏覽器允許儲存資料。')}
+}
+function finishPageLogin(){
+ if(!oauthReturn)return;
+ const response=oauthReturn;oauthReturn=null;
+ let pending;
+ try{pending=JSON.parse(sessionStorage.getItem(REDIRECT_KEY));sessionStorage.removeItem(REDIRECT_KEY)}catch(e){}
+ if(!pending||!pending.state||response.get('state')!==pending.state||
+  !Number.isFinite(pending.created)||Date.now()-pending.created>15*60*1000||Date.now()<pending.created||
+  pending.clientId!==getClientId()||!['save','restore'].includes(pending.action)){
+  response.delete('access_token');setCloudStatus('登入驗證已失效，請重新按「同頁登入並備份」。');return;
+ }
+ if(response.has('error')){response.delete('access_token');setCloudStatus('Google 授權未完成，請重新登入並同意 Drive 檔案權限。');return}
+ const lifetime=Number(response.get('expires_in'));
+ if(!response.get('access_token')||response.get('token_type')?.toLowerCase()!=='bearer'||
+  !Number.isFinite(lifetime)||lifetime<=90||!response.get('scope')?.split(/\s+/).includes(DRIVE_SCOPE)){
+  response.delete('access_token');setCloudStatus('未取得有效的 Drive 備份權限，請重新授權。');return;
+ }
+ googleToken=response.get('access_token');response.delete('access_token');
+ tokenExpires=Date.now()+(lifetime-90)*1000;
+ cloudTrace('收到並驗證同頁授權回應');
+ runWithGoogle(pending.action==='restore'?cloudRestore:cloudSave);
+}
+$('pageLoginSave').onclick=()=>startPageLogin('save');
+$('pageLoginRestore').onclick=()=>startPageLogin('restore');
+finishPageLogin();
 
 </script><script src="https://accounts.google.com/gsi/client" async defer></script></body></html>
